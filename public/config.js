@@ -1,7 +1,7 @@
 window.__CONFIG__ = {
   // The URL for the CORS proxy, the URL must NOT end with a slash!
   // If not specified, the onboarding will not allow a "default setup". The user will have to use the extension or set up a proxy themselves
-  VITE_CORS_PROXY_URL: "",
+  VITE_CORS_PROXY_URL: "https://simple-proxy.vmoviesfiles.workers.dev",
 
   // The READ API key to access TMDB
   VITE_TMDB_READ_API_KEY: "b708dcff37d65758ecc262914f19fd22",
