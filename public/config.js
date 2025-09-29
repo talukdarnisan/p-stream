@@ -15,7 +15,7 @@ window.__CONFIG__ = {
   VITE_NORMAL_ROUTER: true,
 
   // The backend URL to communicate with
-  VITE_BACKEND_URL: "https://glowing-lamp-v6g7wqg65q9436xgw-3000.app.github.dev",
+  VITE_BACKEND_URL: "https://pstream-backend.onrender.com",
 
   // A comma separated list of disallowed IDs in the case of a DMCA claim - in the format "series-<id>" and "movie-<id>"
   VITE_DISALLOWED_IDS: "",
