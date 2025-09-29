@@ -3,19 +3,18 @@ import { t } from "i18next";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWindowSize } from "react-use";
-import { tmdbApi } from "@/backend/metadata/api";
+
 import { isExtensionActive } from "@/backend/extension/messaging";
-import { get, getMediaLogo } from "@/backend/metadata/tmdb";
+import { tmdbApi } from "@/backend/metadata/api";
+import { getMediaLogo } from "@/backend/metadata/tmdb";
 import {
   TraktReleaseResponse,
   getDiscoverContent,
   getReleaseDetails,
 } from "@/backend/metadata/traktApi";
-import { TMDBContentTypes } from "@/backend/metadata/types/tmdb";
 import { Button } from "@/components/buttons/Button";
 import { Icon, Icons } from "@/components/Icon";
 import { Movie, TVShow } from "@/pages/discover/common";
-import { conf } from "@/setup/config";
 import { useDiscoverStore } from "@/stores/discover";
 import { useLanguageStore } from "@/stores/language";
 import { usePreferencesStore } from "@/stores/preferences";
@@ -329,7 +328,9 @@ export function FeaturedCarousel({
           // Fetch items
           const moviePromises = selectedMovieIds.map(({ id }) =>
             tmdbApi<any>(`/movie/${id}`, {
-              params: { append_to_response: "external_ids" },
+              params: {
+                append_to_response: "external_ids",
+              },
             }),
           );
 

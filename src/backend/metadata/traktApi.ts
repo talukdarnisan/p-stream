@@ -1,6 +1,6 @@
 import { tmdbApi } from "./api";
 import { MWMediaType } from "./types/mw";
-import { TMDBContentTypes, TMDBMovieData } from "./types/tmdb";
+import { TMDBMovieData } from "./types/tmdb";
 
 export interface TraktLatestResponse {
   tmdb_ids: number[];

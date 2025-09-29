@@ -1,7 +1,6 @@
 import slugify from "slugify";
 
 import { tmdbApi } from "@/backend/metadata/api";
-import { conf } from "@/setup/config";
 import { useLanguageStore } from "@/stores/language";
 import { usePreferencesStore } from "@/stores/preferences";
 import { getTmdbLanguageCode } from "@/utils/language";
@@ -150,6 +149,17 @@ export function decodeTMDBId(
     type: mediaType,
     id,
   };
+}
+
+function getNextProxy(proxyUrls: string[]): string | undefined {
+  if (!proxyUrls.length) return undefined;
+  // This logic is flawed, it should be managed in a central store or context
+  // For now, let's just use the first one.
+  // A better implementation would be to rotate or handle failures.
+  // let proxyRotationIndex = 0;
+  // const proxy = proxyUrls[proxyRotationIndex % proxyUrls.length];
+  // proxyRotationIndex += 1;
+  return proxyUrls[0];
 }
 
 export async function get<T>(url: string, params?: object): Promise<T> {
@@ -438,15 +448,4 @@ export function getPersonProfileImage(
   }
 
   if (profilePath) return imgUrl;
-}
-
-function getNextProxy(proxyUrls: string[]): string | undefined {
-  if (!proxyUrls.length) return undefined;
-  // This logic is flawed, it should be managed in a central store or context
-  // For now, let's just use the first one.
-  // A better implementation would be to rotate or handle failures.
-  // let proxyRotationIndex = 0;
-  // const proxy = proxyUrls[proxyRotationIndex % proxyUrls.length];
-  // proxyRotationIndex += 1;
-  return proxyUrls[0];
 }

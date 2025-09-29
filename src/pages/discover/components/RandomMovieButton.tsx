@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { get } from "@/backend/metadata/tmdb";
+import { tmdbApi } from "@/backend/metadata/api";
 import { Movie } from "@/pages/discover/common";
-import { conf } from "@/setup/config";
-import { useLanguageStore } from "@/stores/language";
-import { getTmdbLanguageCode } from "@/utils/language";
 
 interface TMDBMovieResponse {
   results: Movie[];
@@ -18,16 +15,12 @@ export function RandomMovieButton() {
     useState<NodeJS.Timeout | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const navigate = useNavigate();
-  const userLanguage = useLanguageStore((s) => s.language);
-  const formattedLanguage = getTmdbLanguageCode(userLanguage);
 
   // Fetch popular movies for random selection
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const data = await get<TMDBMovieResponse>("/movie/popular", {
-          api_key: conf().TMDB_READ_API_KEY,
-          language: formattedLanguage,
+        const data = await tmdbApi<TMDBMovieResponse>("/movie/popular", {
           page: 2,
         });
         setMovies(data.results);
@@ -37,7 +30,7 @@ export function RandomMovieButton() {
     };
 
     fetchMovies();
-  }, [formattedLanguage]);
+  }, []);
 
   useEffect(() => {
     let countdownInterval: NodeJS.Timeout;
