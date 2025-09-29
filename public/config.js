@@ -1,21 +1,44 @@
+/**
+ * @typedef {'string' | 'boolean' | 'nullable-string'} EnvVarType
+ */
+
+/**
+ * Parses an environment variable from `import.meta.env` and performs type coercion.
+ * @param {string} key - The environment variable key (e.g., 'VITE_NORMAL_ROUTER').
+ * @param {EnvVarType} [type='string'] - The expected type of the variable.
+ * @returns {string | boolean | null | undefined} The parsed value.
+ */
+function getEnv(key, type = 'string') {
+  const value = import.meta.env[key];
+  if (value === undefined) return undefined;
+
+  switch (type) {
+    case 'boolean':
+      return value === 'true';
+    case 'nullable-string':
+      return value === 'null' ? null : value;
+    default:
+      return value;
+  }
+}
+
 window.__CONFIG__ = {
-  // The URL for the CORS proxy, the URL must NOT end with a slash!
-  // If not specified, the onboarding will not allow a "default setup". The user will have to use the extension or set up a proxy themselves
-  VITE_CORS_PROXY_URL: import.meta.env.VITE_CORS_PROXY_URL,
+  // The URL for the CORS proxy.
+  VITE_CORS_PROXY_URL: getEnv('VITE_CORS_PROXY_URL'),
 
-  // The READ API key to access TMDB
-  VITE_TMDB_READ_API_KEY: import.meta.env.VITE_TMDB_READ_API_KEY,
+  // The READ API key to access TMDB.
+  VITE_TMDB_READ_API_KEY: getEnv('VITE_TMDB_READ_API_KEY'),
 
-  // The DMCA email displayed in the footer, null to hide the DMCA link
-  VITE_DMCA_EMAIL: import.meta.env.VITE_DMCA_EMAIL === 'null' ? null : import.meta.env.VITE_DMCA_EMAIL,
+  // The DMCA email displayed in the footer.
+  VITE_DMCA_EMAIL: getEnv('VITE_DMCA_EMAIL', 'nullable-string'),
 
-  // Whether to disable hash-based routing, leave this as false if you don't know what this is
-  VITE_NORMAL_ROUTER: import.meta.env.VITE_NORMAL_ROUTER === 'true',
+  // Whether to disable hash-based routing.
+  VITE_NORMAL_ROUTER: getEnv('VITE_NORMAL_ROUTER', 'boolean'),
 
-  // The backend URL to communicate with
-  VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+  // The backend URL to communicate with.
+  VITE_BACKEND_URL: getEnv('VITE_BACKEND_URL'),
 
-  // A comma separated list of disallowed IDs in the case of a DMCA claim - in the format "series-<id>" and "movie-<id>"
-  VITE_DISALLOWED_IDS: import.meta.env.VITE_DISALLOWED_IDS,
-  VITE_APP_DOMAIN: import.meta.env.VITE_APP_DOMAIN
+  // A comma-separated list of disallowed IDs for DMCA claims.
+  VITE_DISALLOWED_IDS: getEnv('VITE_DISALLOWED_IDS'),
+  VITE_APP_DOMAIN: getEnv('VITE_APP_DOMAIN'),
 };
