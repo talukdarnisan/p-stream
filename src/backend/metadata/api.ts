@@ -7,7 +7,9 @@ import { ofetch } from "ofetch";
 function getTmdbApiKey(): string {
   const apiKey = window.__CONFIG__?.VITE_TMDB_READ_API_KEY;
   if (!apiKey) {
-    throw new Error("VITE_TMDB_READ_API_KEY is not configured in window.__CONFIG__");
+    throw new Error(
+      "VITE_TMDB_READ_API_KEY is not configured in window.__CONFIG__",
+    );
   }
   return apiKey;
 }

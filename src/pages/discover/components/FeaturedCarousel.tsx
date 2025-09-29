@@ -335,7 +335,9 @@ export function FeaturedCarousel({
           );
 
           const showPromises = selectedShowIds.map(({ id }) =>
-            tmdbApi<any>(`/tv/${id}`, { params: { append_to_response: "external_ids" } }),
+            tmdbApi<any>(`/tv/${id}`, {
+              params: { append_to_response: "external_ids" },
+            }),
           );
 
           const [movieResults, showResults] = await Promise.all([
