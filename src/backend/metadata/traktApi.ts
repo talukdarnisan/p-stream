@@ -1,4 +1,4 @@
-import { getMediaDetails } from "./tmdb";
+import { tmdbApi } from "./api";
 import { MWMediaType } from "./types/mw";
 import { TMDBContentTypes, TMDBMovieData } from "./types/tmdb";
 
@@ -213,11 +213,13 @@ export const getMovieDetailsForIds = async (
     const batch = limitedIds.slice(i, i + batchSize);
     const batchPromises = batch.map(async (id) => {
       try {
-        const details = await getMediaDetails(
-          id.toString(),
-          TMDBContentTypes.MOVIE,
-        );
-        return details as TMDBMovieData;
+        // Use the new, pre-configured tmdbApi client
+        const details = await tmdbApi<TMDBMovieData>(`/movie/${id}`, {
+          params: {
+            append_to_response: "external_ids,credits,content_ratings",
+          },
+        });
+        return details;
       } catch (error) {
         console.error(`Failed to fetch movie details for ID ${id}:`, error);
         return null;
