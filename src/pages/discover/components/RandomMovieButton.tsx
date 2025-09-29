@@ -21,7 +21,9 @@ export function RandomMovieButton() {
     const fetchMovies = async () => {
       try {
         const data = await tmdbApi<TMDBMovieResponse>("/movie/popular", {
-          page: 2,
+          params: {
+            page: 2,
+          },
         });
         setMovies(data.results);
       } catch (error) {

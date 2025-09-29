@@ -12,6 +12,7 @@ import {
   getDiscoverContent,
   getReleaseDetails,
 } from "@/backend/metadata/traktApi";
+import { TMDBContentTypes } from "@/backend/metadata/types/tmdb";
 import { Button } from "@/components/buttons/Button";
 import { Icon, Icons } from "@/components/Icon";
 import { Movie, TVShow } from "@/pages/discover/common";
