@@ -1,5 +1,6 @@
 import slugify from "slugify";
 
+import { tmdbApi } from "@/backend/metadata/api";
 import { conf } from "@/setup/config";
 import { useLanguageStore } from "@/stores/language";
 import { usePreferencesStore } from "@/stores/preferences";
@@ -24,7 +25,6 @@ import {
   TMDBShowData,
   TMDBShowSearchResult,
 } from "./types/tmdb";
-import { mwFetch } from "../helpers/fetch";
 
 export function mediaTypeToTMDB(type: MWMediaType): TMDBContentTypes {
   if (type === MWMediaType.MOVIE) return TMDBContentTypes.MOVIE;
@@ -152,83 +152,17 @@ export function decodeTMDBId(
   };
 }
 
-const tmdbBaseUrl1 = "https://api.themoviedb.org/3/";
-const tmdbBaseUrl2 = "https://api.tmdb.org/3/";
-
-const apiKey = conf().TMDB_READ_API_KEY;
-
-const tmdbHeaders = {
-  accept: "application/json",
-  Authorization: `Bearer ${apiKey}`,
-};
-
-function abortOnTimeout(timeout: number): AbortSignal {
-  const controller = new AbortController();
-  setTimeout(() => controller.abort(), timeout);
-  return controller.signal;
-}
-
-let proxyRotationIndex = 0;
-
-function getNextProxy(proxyUrls: string[]): string | undefined {
-  if (!proxyUrls.length) return undefined;
-  const proxy = proxyUrls[proxyRotationIndex % proxyUrls.length];
-  proxyRotationIndex += 1;
-  return proxy;
-}
-
 export async function get<T>(url: string, params?: object): Promise<T> {
-  const proxyUrls = getProxyUrls();
-  const proxy = getNextProxy(proxyUrls);
-  const shouldProxyTmdb = usePreferencesStore.getState().proxyTmdb;
   const userLanguage = useLanguageStore.getState().language;
   const formattedLanguage = getTmdbLanguageCode(userLanguage);
 
-  if (!apiKey) throw new Error("TMDB API key not set");
-
-  // directly writing parameters, otherwise it will start the first parameter in the proxied request as "&" instead of "?" because it doesnt understand its proxied
-  const fullUrl = new URL(tmdbBaseUrl1 + url);
-  const allParams = {
-    ...params,
-    language: formattedLanguage,
-  };
-
-  if (allParams) {
-    Object.entries(allParams).forEach(([key, value]) => {
-      fullUrl.searchParams.append(key, String(value));
-    });
-  }
-
-  if (proxy && shouldProxyTmdb) {
-    try {
-      return await mwFetch<T>(
-        `/?destination=${encodeURIComponent(fullUrl.toString())}`,
-        {
-          headers: tmdbHeaders,
-          baseURL: proxy,
-          signal: abortOnTimeout(5000),
-        },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  try {
-    return await mwFetch<T>(encodeURI(url), {
-      headers: tmdbHeaders,
-      baseURL: tmdbBaseUrl1,
-      params: allParams,
-      signal: abortOnTimeout(5000),
-    });
-  } catch (err) {
-    return mwFetch<T>(encodeURI(url), {
-      headers: tmdbHeaders,
-      baseURL: tmdbBaseUrl2,
-      params: allParams,
-      signal: abortOnTimeout(30000),
-    });
-  }
+  // The API key is now automatically added by the tmdbApi instance
+  return tmdbApi<T>(url, {
+    params: {
+      ...params,
+      language: formattedLanguage,
+    },
+  });
 }
 
 export async function multiSearch(
@@ -504,4 +438,15 @@ export function getPersonProfileImage(
   }
 
   if (profilePath) return imgUrl;
+}
+
+function getNextProxy(proxyUrls: string[]): string | undefined {
+  if (!proxyUrls.length) return undefined;
+  // This logic is flawed, it should be managed in a central store or context
+  // For now, let's just use the first one.
+  // A better implementation would be to rotate or handle failures.
+  // let proxyRotationIndex = 0;
+  // const proxy = proxyUrls[proxyRotationIndex % proxyUrls.length];
+  // proxyRotationIndex += 1;
+  return proxyUrls[0];
 }
