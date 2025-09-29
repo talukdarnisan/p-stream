@@ -1,6 +1,8 @@
 window.__CONFIG__ = {
   // The URL for the CORS proxy, the URL must NOT end with a slash!
   // If not specified, the onboarding will not allow a "default setup". The user will have to use the extension or set up a proxy themselves
+
+  https://simple-proxy.fawesome.workers.dev/?destination=
   VITE_CORS_PROXY_URL: "https://simple-proxy.vmoviesfiles.workers.dev",
 
   // The READ API key to access TMDB
@@ -13,7 +15,7 @@ window.__CONFIG__ = {
   VITE_NORMAL_ROUTER: true,
 
   // The backend URL to communicate with
-  VITE_BACKEND_URL: "https://simple-proxy.fawesome.workers.dev/?destination=https://glowing-lamp-v6g7wqg65q9436xgw-3000.app.github.dev",
+  VITE_BACKEND_URL: "https://glowing-lamp-v6g7wqg65q9436xgw-3000.app.github.dev",
 
   // A comma separated list of disallowed IDs in the case of a DMCA claim - in the format "series-<id>" and "movie-<id>"
   VITE_DISALLOWED_IDS: "",
